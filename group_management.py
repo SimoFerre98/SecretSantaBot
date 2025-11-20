@@ -5,7 +5,7 @@ from utils import load_data, save_data, generate_unique_id
 GROUPS_FILE = "groups/groups.json"
 GROUPS_DIR = "data"
 
-def create_group(user_name, chat_id):
+def create_group(user_name, chat_id=None):
     """Crea un nuovo gruppo e restituisce il suo ID."""
     group_id = generate_unique_id()
     groups = load_data(GROUPS_FILE)
@@ -19,7 +19,9 @@ def create_group(user_name, chat_id):
         os.makedirs(group_path, exist_ok=True)
 
         # Crea i file JSON del gruppo
-        save_data(os.path.join(group_path, "participants.json"), {user_name: chat_id})
+        # Se chat_id è None (creato da dashboard), salviamo un placeholder o gestiamo dopo
+        participants_data = {user_name: chat_id if chat_id else "DASHBOARD_ADMIN"}
+        save_data(os.path.join(group_path, "participants.json"), participants_data)
         save_data(os.path.join(group_path, "exclusions.json"), {})
         save_data(os.path.join(group_path, "wishlist.json"), {})
         save_data(os.path.join(group_path, "shuffle.json"), {})
