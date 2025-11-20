@@ -22,5 +22,21 @@
             "Simo",
             "Fermyone"
         ]
+    },
+    "52bd57bb-ec50-4b3d-b7a0-4bd22c6cd0a2": {
+        "name": "Gruppo di Simo",
+        "admin": "Simo",
+        "members": [
+            "Simo"
+        ]
+    },
+    "5a2b5af2-6a68-452c-8e55-c06b3a2fb687": {
+        "name": "Gruppo di Simo",
+        "admin": "Simo",
+        "members": [
+            "Simo",
+            "Fed",
+            "Camilla"
+        ]
     }
 }

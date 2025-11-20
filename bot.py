@@ -12,7 +12,8 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def creategroup(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Crea un nuovo gruppo e lo imposta come attivo."""
     user_name = update.effective_user.first_name
-    group_id = create_group(user_name)
+    chat_id = update.effective_chat.id
+    group_id = create_group(user_name, chat_id)
 
     # Memorizza il nuovo gruppo come attivo
     context.user_data["current_group"] = group_id
@@ -30,7 +31,8 @@ async def joingroup(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     group_id = context.args[0]
     user_name = update.effective_user.first_name
-    success, message = join_group(group_id, user_name)
+    chat_id = update.effective_chat.id
+    success, message = join_group(group_id, user_name, chat_id)
 
     if success:
         # Memorizza il gruppo attivo per l'utente

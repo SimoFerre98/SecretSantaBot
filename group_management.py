@@ -5,7 +5,7 @@ from utils import load_data, save_data, generate_unique_id
 GROUPS_FILE = "groups/groups.json"
 GROUPS_DIR = "data"
 
-def create_group(user_name):
+def create_group(user_name, chat_id):
     """Crea un nuovo gruppo e restituisce il suo ID."""
     group_id = generate_unique_id()
     groups = load_data(GROUPS_FILE)
@@ -19,14 +19,14 @@ def create_group(user_name):
         os.makedirs(group_path, exist_ok=True)
 
         # Crea i file JSON del gruppo
-        save_data(os.path.join(group_path, "participants.json"), {user_name: "admin"})
+        save_data(os.path.join(group_path, "participants.json"), {user_name: chat_id})
         save_data(os.path.join(group_path, "exclusions.json"), {})
         save_data(os.path.join(group_path, "wishlist.json"), {})
         save_data(os.path.join(group_path, "shuffle.json"), {})
 
     return group_id
 
-def join_group(group_id, user_name):
+def join_group(group_id, user_name, chat_id):
     """Aggiunge un utente a un gruppo esistente."""
     groups = load_data(GROUPS_FILE)
 
@@ -40,7 +40,7 @@ def join_group(group_id, user_name):
         # Aggiungi l'utente al file participants.json del gruppo
         group_path = os.path.join(GROUPS_DIR, group_id)
         participants = load_data(os.path.join(group_path, "participants.json"))
-        participants[user_name] = "member"
+        participants[user_name] = chat_id  # Salva il Chat ID invece del ruolo
         save_data(os.path.join(group_path, "participants.json"), participants)
 
     return True, f"Sei stato aggiunto al gruppo {groups[group_id]['name']}."
