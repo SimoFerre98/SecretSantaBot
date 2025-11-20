@@ -1,0 +1,22 @@
+{
+    "Simo": ["Michela Delfino", "Giulia", "Camilla"],
+    "Denise": ["Mace", "Giulia", "Davide"],
+    "Mace": ["Denise", "Fed"],
+    "Fed": ["Gaia", "Matteo"],
+    "Enrico": ["Benedetta", "Mace"],
+    "Michela Delfino": ["pietroo00", "Denise"],
+    "Benedetta": ["Enrico"],
+    "Matteo": ["Martina Muserra"],
+    "Gaia": ["Fed"],
+    "Martina Muserra": ["Davide", "Benedetta"],
+    "pietroo00": ["Michela Delfino"],
+    "Lorenzo": ["Beatrice", "Giulia"],
+    "Beatrice": ["Lorenzo", "Simo"],
+    "chiara": ["Simo"],
+    "Camilla": ["Giulia", "Gaia","Elia"],
+    "Davide": ["Martina Muserra", "Giuseps"],
+    "Elia": ["Andrea"],
+    "Giulia": ["Camilla"],
+    "Giuseps": ["Giulia", "Beatrice", "Davide"],
+    "Andrea": ["Giuseps"]
+}

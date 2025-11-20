@@ -1,0 +1,32 @@
+import json
+
+# Partecipanti forniti
+participants = {
+    "Simo": 139657524,
+    "Denise": 5197502678,
+    "Mace": 5665753484,
+    "Fed": 111351614,
+    "Enrico": 839542232,
+    "Michela Delfino": 1360138714,
+    "Benedetta": 6027984863,
+    "Matteo": 5677003363,
+    "Gaia": 920083604,
+    "Martina Muserra": 1537279644,
+    "pietroo00": 707396900,
+    "Lorenzo": 737569415,
+    "Beatrice": 1869712604,
+    "chiara": 1339421072,
+    "Camilla": 548309831,
+    "Andrea": 1876286913,
+    "Davide": 347223686,
+    "Elia": 5164798065,
+    "Giulia": 932775486,
+    "Giuseps": 578270970
+}
+
+# Salvataggio dei partecipanti in un file JSON
+file_path = "participants.json"
+with open(file_path, "w") as file:
+    json.dump(participants, file, indent=4)
+
+file_path
