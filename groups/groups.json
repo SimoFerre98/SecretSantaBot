@@ -45,5 +45,19 @@
         "members": [
             "Murta"
         ]
+    },
+    "45235cbc-1f67-4b6a-a928-b77f8e4589e6": {
+        "name": "Gruppo di Murta",
+        "admin": "Murta",
+        "members": [
+            "Murta"
+        ]
+    },
+    "51dc10be-db1b-413c-acb5-c0e8d6c86af4": {
+        "name": "Gruppo di Paravanico",
+        "admin": "Paravanico",
+        "members": [
+            "Paravanico"
+        ]
     }
 }
