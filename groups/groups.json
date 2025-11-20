@@ -38,5 +38,12 @@
             "Fed",
             "Camilla"
         ]
+    },
+    "1c5b6646-757e-4057-89bf-cb7eccce4ce4": {
+        "name": "Gruppo di Murta",
+        "admin": "Murta",
+        "members": [
+            "Murta"
+        ]
     }
 }
