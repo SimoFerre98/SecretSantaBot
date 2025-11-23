@@ -2,6 +2,7 @@ import streamlit as st
 import json
 import os
 import asyncio
+import shutil
 from telegram import Bot
 from group_actions import shuffle_group, manage_exclusions
 from send_results import send_results_to_group
@@ -24,6 +25,20 @@ def load_json(filepath):
 def save_json(filepath, data):
     with open(filepath, "w") as f:
         json.dump(data, f, indent=4)
+
+def delete_group(group_id):
+    groups = load_json(GROUPS_FILE)
+    if group_id not in groups:
+        return False, "Gruppo non trovato."
+    groups.pop(group_id, None)
+    save_json(GROUPS_FILE, groups)
+    group_dir = os.path.join(DATA_DIR, group_id)
+    if os.path.isdir(group_dir):
+        try:
+            shutil.rmtree(group_dir)
+        except Exception as e:
+            return False, f"Errore eliminazione dati del gruppo: {e}"
+    return True, "Gruppo eliminato con successo."
 
 async def send_telegram_message(chat_id, text):
     bot = Bot(token=BOT_TOKEN)
@@ -72,11 +87,26 @@ with st.sidebar.expander("➕ Crea Nuovo Gruppo"):
     new_group_name = st.text_input("Nome Admin del Gruppo")
     if st.button("Crea Gruppo"):
         if new_group_name:
-            new_id = create_group(new_group_name)
-            st.success(f"Gruppo creato! ID: {new_id}")
+            new_id, msg = create_group(new_group_name, group_name=new_group_name)
+            if new_id:
+                st.success(f"Gruppo creato! ID: {new_id}")
+            else:
+                st.error(msg)
             st.rerun()
         else:
             st.error("Inserisci un nome.")
+
+if selected_group_id:
+    st.sidebar.divider()
+    with st.sidebar.expander("🗑️ Elimina Gruppo"):
+        confirm_del = st.checkbox("Confermo eliminazione definitiva", key="confirm_del")
+        if st.button("Elimina Gruppo", key="btn_del", disabled=not confirm_del):
+            ok, msg = delete_group(selected_group_id)
+            if ok:
+                st.sidebar.success(msg)
+                st.rerun()
+            else:
+                st.sidebar.error(msg)
 
 if not selected_group_id:
     st.stop()

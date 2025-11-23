@@ -30,34 +30,54 @@
             "Simo"
         ]
     },
-    "5a2b5af2-6a68-452c-8e55-c06b3a2fb687": {
-        "name": "Gruppo di Simo",
+    "b1e9c0f1-24c5-4d60-a1d2-13db828f889b": {
+        "name": "Gruppo di test",
+        "admin": "test",
+        "members": [
+            "test"
+        ]
+    },
+    "b6003513-faa8-4b24-80c8-a9362d8b1104": {
+        "name": "Gruppo di SantaMadonna",
+        "admin": "SantaMadonna",
+        "members": [
+            "SantaMadonna"
+        ]
+    },
+    "f5ae8bca-0316-4435-a45e-8c6acc765d98": {
+        "name": "Gruppo di Taverna",
+        "admin": "Taverna",
+        "members": [
+            "Taverna"
+        ]
+    },
+    "5162e902-9a57-479f-9954-28efb77ce593": {
+        "name": "Gruppo di Ariana",
+        "admin": "Ariana",
+        "members": [
+            "Ariana"
+        ]
+    },
+    "f47f9b5c-234c-432b-86b6-6e2791c89677": {
+        "name": "Gruppo di Ariana",
+        "admin": "Ariana",
+        "members": [
+            "Ariana",
+            "Simo"
+        ]
+    },
+    "f174b494-a804-4b77-bfa1-0b7fbf6aa7aa": {
+        "name": "Ciaooo",
         "admin": "Simo",
         "members": [
-            "Simo",
-            "Fed",
-            "Camilla"
+            "Simo"
         ]
     },
-    "1c5b6646-757e-4057-89bf-cb7eccce4ce4": {
-        "name": "Gruppo di Murta",
-        "admin": "Murta",
+    "772c108a-3833-4bb0-b986-c4f68121b014": {
+        "name": "Poiuy",
+        "admin": "Simo",
         "members": [
-            "Murta"
-        ]
-    },
-    "45235cbc-1f67-4b6a-a928-b77f8e4589e6": {
-        "name": "Gruppo di Murta",
-        "admin": "Murta",
-        "members": [
-            "Murta"
-        ]
-    },
-    "51dc10be-db1b-413c-acb5-c0e8d6c86af4": {
-        "name": "Gruppo di Paravanico",
-        "admin": "Paravanico",
-        "members": [
-            "Paravanico"
+            "Simo"
         ]
     }
 }

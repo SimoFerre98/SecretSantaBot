@@ -20,9 +20,11 @@ async def send_results_to_group(group_id, bot_token):
     # Carica i dati
     participants_path = os.path.join(group_folder, "participants.json")
     shuffle_path = os.path.join(group_folder, "shuffle.json")
+    wishlist_path = os.path.join(group_folder, "wishlist.json")
     
     participants = load_data(participants_path)  # ID dei partecipanti
     shuffle_results = load_data(shuffle_path)  # Risultati del sorteggio
+    wishlist = load_data(wishlist_path) # Wishlist
 
     if not shuffle_results:
         return False, "Errore: Nessun risultato trovato. Esegui prima il sorteggio."
@@ -31,26 +33,21 @@ async def send_results_to_group(group_id, bot_token):
     for giver, receiver in shuffle_results.items():
         chat_id = participants.get(giver)
         
-        # Gestione caso in cui il partecipante ha un ruolo (es. "admin") invece che chat_id diretto
-        # O se il formato è diverso. Assumiamo che participants.json mappi Nome -> ChatID o Nome -> Ruolo
-        # Se mappa Nome -> Ruolo, dobbiamo trovare il ChatID da qualche altra parte?
-        # Guardando bot.py: participants[user_name] = chat_id (in secret_santa_bot.py)
-        # MA in group_management.py: participants[user_name] = "admin" o "member".
-        # C'è un problema: group_management.py NON salva i Chat ID!
-        # Dobbiamo risolvere questo problema. Per ora mantengo la logica ma segnalo il problema.
-        
-        # In group_management.py riga 22 e 43 salviamo solo il ruolo.
-        # Dobbiamo salvare anche il Chat ID quando uno fa /joingroup.
-        
         if not isinstance(chat_id, int) and not (isinstance(chat_id, str) and chat_id.isdigit()):
-             # Fallback: proviamo a vedere se c'è un altro file o se dobbiamo cambiare la logica di join
-             # Per ora logghiamo l'errore, ma questo è un bug preesistente che la dashboard evidenzierà.
              results_log.append(f"⚠️ Impossibile inviare a {giver}: Chat ID mancante (Trovato: {chat_id})")
              continue
 
         message = f"Ciao {giver}, sei il Secret Santa di: {receiver}! 🎁"
+        
+        # Aggiungi wishlist se presente
+        receiver_wish = wishlist.get(receiver)
+        if receiver_wish:
+            message += f"\n\n📝 **La sua Wishlist:**\n{receiver_wish}"
+        else:
+            message += "\n\n(Non ha specificato desideri particolari)"
+
         try:
-            await bot.send_message(chat_id=chat_id, text=message)
+            await bot.send_message(chat_id=chat_id, text=message, parse_mode="Markdown")
             results_log.append(f"✅ Messaggio inviato a {giver}.")
         except Exception as e:
             results_log.append(f"❌ Errore invio a {giver}: {e}")

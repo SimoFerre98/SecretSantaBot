@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secret Santa App</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="snow-container"></div>
+    
+    <div class="app-container">
+        <header>
+            <div class="santa-icon">🎅</div>
+            <h1>Secret Santa</h1>
+            <p class="subtitle">Ho ho ho! Benvenuto!</p>
+        </header>
+
+        <div class="card user-card">
+            <div class="user-avatar" id="userAvatar">👤</div>
+            <div class="user-info">
+                <h2 id="userName">Caricamento...</h2>
+                <p id="userStatus">In attesa del sorteggio...</p>
+            </div>
+        </div>
+
+        <div class="card wishlist-card">
+            <h3>🎁 La tua Wishlist</h3>
+            <textarea id="wishlistInput" placeholder="Cosa vorresti ricevere? (es. Calzini, Libri...)"></textarea>
+            <button id="saveWishlistBtn" class="btn-primary">Salva Desiderio</button>
+        </div>
+
+        <div class="card group-card">
+            <h3>👥 Il tuo Gruppo</h3>
+            <div id="groupList" class="group-list">
+                <!-- Lista partecipanti simulata -->
+                <div class="group-item"><span>Simo</span> <span class="badge admin">Admin</span></div>
+                <div class="group-item"><span>Mace</span></div>
+                <div class="group-item"><span>Denise</span></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

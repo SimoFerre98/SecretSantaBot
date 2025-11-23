@@ -1,0 +1,172 @@
+:root {
+    --bg-color: #b3000c; /* Christmas Red */
+    --card-bg: rgba(255, 255, 255, 0.95);
+    --text-color: #333;
+    --accent-color: #0f5132; /* Christmas Green */
+    --gold: #ffd700;
+    --tg-theme-bg-color: var(--bg-color);
+    --tg-theme-text-color: var(--text-color);
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--bg-color);
+    background-image: radial-gradient(circle, #d41c2c 0%, #b3000c 100%);
+    color: var(--text-color);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+.app-container {
+    padding: 20px;
+    max-width: 600px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 10;
+}
+
+header {
+    text-align: center;
+    color: white;
+    margin-bottom: 30px;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+header h1 {
+    font-family: 'Mountains of Christmas', cursive;
+    font-size: 3rem;
+    margin: 0;
+}
+
+.santa-icon {
+    font-size: 4rem;
+    animation: bounce 2s infinite;
+}
+
+.card {
+    background: var(--card-bg);
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    backdrop-filter: blur(10px);
+    transform: translateY(0);
+    transition: transform 0.3s ease;
+}
+
+.card:active {
+    transform: scale(0.98);
+}
+
+.user-card {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.user-avatar {
+    width: 60px;
+    height: 60px;
+    background: var(--accent-color);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+    border: 3px solid var(--gold);
+}
+
+.user-info h2 {
+    margin: 0;
+    font-size: 1.2rem;
+}
+
+.user-info p {
+    margin: 5px 0 0;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+textarea {
+    width: 100%;
+    height: 80px;
+    border: 2px solid #eee;
+    border-radius: 10px;
+    padding: 10px;
+    font-family: inherit;
+    resize: none;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+}
+
+textarea:focus {
+    outline: none;
+    border-color: var(--accent-color);
+}
+
+.btn-primary {
+    width: 100%;
+    padding: 12px;
+    background: var(--accent-color);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-primary:hover {
+    background: #0a3b24;
+}
+
+.group-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.group-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background: #f8f9fa;
+    border-radius: 10px;
+}
+
+.badge {
+    font-size: 0.8rem;
+    padding: 4px 8px;
+    border-radius: 20px;
+}
+
+.badge.admin {
+    background: var(--gold);
+    color: #8a6d00;
+}
+
+/* Snow Animation */
+.snow-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10"><circle cx="5" cy="5" r="1" fill="white" opacity="0.5"/></svg>');
+    animation: snow 10s linear infinite;
+}
+
+@keyframes snow {
+    0% { background-position: 0 0, 0 0, 0 0; }
+    100% { background-position: 500px 1000px, 400px 400px, 300px 300px; }
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}

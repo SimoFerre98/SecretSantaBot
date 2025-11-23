@@ -30,9 +30,11 @@ def shuffle_group(group_id, user_name):
 
 def show_participants(group_id):
     """Mostra i partecipanti di un gruppo."""
-    group_path = f"data/{group_id}"
-    participants = load_data(os.path.join(group_path, "participants.json"))
-    return "\n".join(participants.keys())
+    groups = load_data("groups/groups.json")
+    if group_id in groups:
+        members = groups[group_id].get("members", [])
+        return "\n".join(members)
+    return ""
 
 def add_to_wishlist(group_id, user_name, wish):
     """Aggiunge un elemento alla wishlist dell'utente."""

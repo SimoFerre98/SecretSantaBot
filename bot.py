@@ -1,11 +1,15 @@
-from telegram import Update
-from telegram.ext import Application, CommandHandler, ContextTypes
-from group_management import create_group, join_group
+from telegram import Update, ReplyKeyboardRemove
+from telegram.ext import Application, CommandHandler, ContextTypes, MessageHandler, filters, ConversationHandler, CallbackQueryHandler
+from group_management import create_group, join_group, get_all_groups, save_wishlist
 from group_actions import show_participants
-from utils import get_group_keyboard, load_data
+from utils import get_main_menu_keyboard, load_data
 import os
 
 SETTINGS_FILE = "settings.json"
+
+# Stati per la conversazione
+GROUP_NAME = 0
+WAITING_WISHLIST = 1
 
 def is_bot_active():
     if os.path.exists(SETTINGS_FILE):
@@ -22,23 +26,60 @@ async def check_maintenance(update: Update):
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Messaggio di benvenuto."""
     if not await check_maintenance(update): return
-    await update.message.reply_text("Benvenuto! Usa il menu comandi per interagire con il bot.")
+    # Invia un messaggio per rimuovere la vecchia tastiera
+    await update.message.reply_text(
+        "Benvenuto! Usa il menu comandi per interagire con il bot.",
+        reply_markup=ReplyKeyboardRemove()
+    )
 
-async def creategroup(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """Crea un nuovo gruppo e lo imposta come attivo."""
-    if not await check_maintenance(update): return
+async def start_create_group(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Inizia il processo di creazione del gruppo chiedendo il nome."""
+    if not await check_maintenance(update): return ConversationHandler.END
     
+    await update.message.reply_text(
+        "Inserisci il nome univoco per il nuovo gruppo (es. 'Natale 2025'):\n"
+        "Digita /cancel per annullare.",
+        reply_markup=ReplyKeyboardRemove()
+    )
+    return GROUP_NAME
+
+async def receive_group_name(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Riceve il nome del gruppo e tenta di crearlo."""
+    group_name = update.message.text
     user_name = update.effective_user.first_name
     chat_id = update.effective_chat.id
-    group_id = create_group(user_name, chat_id)
-
+    
+    group_id, msg = create_group(user_name, chat_id, group_name)
+    
+    if not group_id:
+        await update.message.reply_text(f"❌ {msg}\nRiprova con un altro nome o /cancel.")
+        return GROUP_NAME
+    
     # Memorizza il nuovo gruppo come attivo
     context.user_data["current_group"] = group_id
 
     await update.message.reply_text(
-        f"✅ Gruppo creato con successo! ID del gruppo: {group_id}\nSeleziona un'azione dal menu:",
-        reply_markup=get_group_keyboard()
+        f"✅ {msg}\nID del gruppo: {group_id}\nSeleziona un'azione dal menu:",
+        reply_markup=get_main_menu_keyboard()
     )
+    return ConversationHandler.END
+
+async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Annulla la conversazione."""
+    await update.message.reply_text("Operazione annullata.")
+    return ConversationHandler.END
+
+async def list_groups(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Elenca tutti i gruppi disponibili."""
+    if not await check_maintenance(update): return
+    
+    groups = get_all_groups()
+    if groups:
+        msg = "📋 **Gruppi Disponibili:**\n" + "\n".join([f"- {g}" for g in groups])
+    else:
+        msg = "Nessun gruppo trovato."
+        
+    await update.message.reply_text(msg, parse_mode="Markdown")
 
 async def joingroup(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Aggiungi l'utente a un gruppo e imposta il gruppo attivo."""
@@ -58,52 +99,97 @@ async def joingroup(update: Update, context: ContextTypes.DEFAULT_TYPE):
         context.user_data["current_group"] = group_id
         await update.message.reply_text(
             f"✅ {message}\nSeleziona un'azione dal menu:",
-            reply_markup=get_group_keyboard()
+            reply_markup=get_main_menu_keyboard()
         )
     else:
         await update.message.reply_text(f"❌ {message}")
 
+async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Gestisce i click sui pulsanti inline."""
+    query = update.callback_query
+    await query.answer()
+    
+    data = query.data
+    group_id = context.user_data.get("current_group")
+    
+    if not group_id:
+        await query.edit_message_text("⚠️ Sessione scaduta. Usa /joingroup per rientrare.")
+        return
+
+    if data == "participants":
+        participant_list = show_participants(group_id)
+        await query.edit_message_text(
+            f"👥 **Partecipanti:**\n{participant_list}",
+            parse_mode="Markdown",
+            reply_markup=get_main_menu_keyboard()
+        )
+    
+    elif data == "leave_group":
+        context.user_data.pop("current_group", None)
+        await query.edit_message_text("🔙 Sei uscito dal gruppo.")
+        return ConversationHandler.END
+    
+    elif data == "wishlist":
+        await query.edit_message_text("🎁 Cosa vorresti ricevere? Scrivilo qui sotto:")
+        return WAITING_WISHLIST
+
+    elif data in ["exclusions", "shuffle"]:
+        await query.edit_message_text(
+            f"🚧 Funzionalità '{data}' in arrivo! Usa la Dashboard per ora.",
+            reply_markup=get_main_menu_keyboard()
+        )
+    return ConversationHandler.END
+
+async def receive_wishlist(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Riceve e salva la wishlist dell'utente."""
+    wish = update.message.text
+    user_name = update.effective_user.first_name
+    group_id = context.user_data.get("current_group")
+    
+    if not group_id:
+        await update.message.reply_text("⚠️ Errore: Gruppo non trovato. Usa /joingroup.")
+        return ConversationHandler.END
+
+    save_wishlist(group_id, user_name, wish)
+    
+    await update.message.reply_text(
+        f"✅ Wishlist salvata: '{wish}'",
+        reply_markup=get_main_menu_keyboard()
+    )
+    return ConversationHandler.END
+
 async def participants(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Mostra i partecipanti del gruppo attivo."""
-    if not await check_maintenance(update): return
-    
-    # Recupera il gruppo attivo dall'utente
-    group_id = context.user_data.get("current_group")
-    if not group_id:
-        response = "Devi prima accedere a un gruppo."
-    else:
-        participant_list = show_participants(group_id)
-        response = f"Partecipanti del gruppo:\n{participant_list}"
-
-    # Controlla il contesto e invia la risposta nel modo appropriato
-    if update.message:
-        await update.message.reply_text(response)
-    elif update.callback_query:
-        await update.callback_query.answer(response)
-
-
-    participant_list = show_participants(group_id)
-    await update.message.reply_text(f"Partecipanti del gruppo:\n{participant_list}")
-
-async def back_to_group_menu(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """Torna al menu dei gruppi."""
-    if not await check_maintenance(update): return
-    
-    context.user_data.pop("current_group", None)  # Rimuove il gruppo attivo
-    await update.message.reply_text(
-        "Sei tornato al menu dei gruppi. Usa i comandi per selezionare o creare un nuovo gruppo.",
-        reply_markup=None
-    )
+    # Manteniamo questo comando per compatibilità ma usiamo la logica inline se possibile
+    pass
 
 def main():
     app = Application.builder().token("7548642306:AAFIFgN95ntOFGdcI2-sHS7T3y3zCCut4R8").build()
 
     # Comandi
     app.add_handler(CommandHandler("start", start))
-    app.add_handler(CommandHandler("creategroup", creategroup))
-    app.add_handler(CommandHandler("joingroup", joingroup))
-    app.add_handler(CommandHandler("participants", participants))
-    app.add_handler(CommandHandler("back", back_to_group_menu))
+    app.add_handler(CommandHandler("start", start))
+    
+    # Conversation Handler per la creazione del gruppo
+    conv_handler_create = ConversationHandler(
+        entry_points=[CommandHandler("creategroup", start_create_group)],
+        states={
+            GROUP_NAME: [MessageHandler(filters.TEXT & ~filters.COMMAND, receive_group_name)],
+        },
+        fallbacks=[CommandHandler("cancel", cancel)],
+    )
+    app.add_handler(conv_handler_create)
+
+    # Conversation Handler per la gestione dei bottoni (inclusa Wishlist)
+    conv_handler_buttons = ConversationHandler(
+        entry_points=[CallbackQueryHandler(button_handler)],
+        states={
+            WAITING_WISHLIST: [MessageHandler(filters.TEXT & ~filters.COMMAND, receive_wishlist)],
+        },
+        fallbacks=[CommandHandler("cancel", cancel)],
+        per_chat=True
+    )
+    app.add_handler(conv_handler_buttons)
 
     print("Bot in esecuzione...")
     app.run_polling()

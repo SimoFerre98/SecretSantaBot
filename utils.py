@@ -17,15 +17,26 @@ def save_data(filename, data):
 def generate_unique_id():
     return str(uuid.uuid4())
 
-def get_group_keyboard():
-    """Crea una tastiera per interagire con il gruppo."""
-    from telegram import KeyboardButton, ReplyKeyboardMarkup
+def get_main_menu_keyboard():
+    """Crea una tastiera Inline per il menu principale."""
+    from telegram import InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo
     keyboard = [
-        [KeyboardButton("Partecipanti"), KeyboardButton("Aggiungi Wishlist")],
-        [KeyboardButton("Esclusioni"), KeyboardButton("Shuffle")],
-        [KeyboardButton("Torna al Menu Gruppi")]
+        [
+            InlineKeyboardButton("🎅 Apri Mini App", web_app=WebAppInfo(url="https://sferrero.github.io/SecretSantaBot/webapp/index.html")), # Placeholder URL
+        ],
+        [
+            InlineKeyboardButton("👥 Partecipanti", callback_data="participants"),
+            InlineKeyboardButton("🎁 Wishlist", callback_data="wishlist"),
+        ],
+        [
+            InlineKeyboardButton("🚫 Esclusioni", callback_data="exclusions"),
+            InlineKeyboardButton("🎲 Shuffle", callback_data="shuffle"),
+        ],
+        [
+            InlineKeyboardButton("🔙 Esci dal Gruppo", callback_data="leave_group")
+        ]
     ]
-    return ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
+    return InlineKeyboardMarkup(keyboard)
 
 async def send_response(update, message: str):
     """Invia una risposta in base al contesto (message o callback_query)."""
