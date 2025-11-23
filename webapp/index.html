@@ -1,16 +1,20 @@
 <!DOCTYPE html>
 <html lang="it">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Secret Santa App</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@700&family=Poppins:wght@400;600&display=swap"
+        rel="stylesheet">
 </head>
+
 <body>
     <div class="snow-container"></div>
-    
+
     <div class="app-container">
         <header>
             <div class="santa-icon">🎅</div>
@@ -33,16 +37,18 @@
         </div>
 
         <div class="card group-card">
-            <h3>👥 Il tuo Gruppo</h3>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h3>📋 Gruppi Disponibili</h3>
+                <button id="refreshGroupsBtn"
+                    style="background: none; border: none; cursor: pointer; font-size: 1.2em;">🔄</button>
+            </div>
             <div id="groupList" class="group-list">
-                <!-- Lista partecipanti simulata -->
-                <div class="group-item"><span>Simo</span> <span class="badge admin">Admin</span></div>
-                <div class="group-item"><span>Mace</span></div>
-                <div class="group-item"><span>Denise</span></div>
+                <div class="group-item" style="justify-content: center;"><span>Caricamento...</span></div>
             </div>
         </div>
     </div>
 
     <script src="script.js"></script>
 </body>
+
 </html>

@@ -1,73 +1,47 @@
-# SecretSantaBot
+# 🎅 Secret Santa Bot & Dashboard
 
-SecretSantaBot è un progetto in Python che gestisce il gioco del Secret Santa tramite un bot Telegram e una dashboard web. Consente di creare gruppi, aggiungere partecipanti, definire esclusioni, eseguire il sorteggio e inviare i risultati direttamente su Telegram.
+Benvenuto nel progetto **Secret Santa Bot**! Questo sistema ti permette di organizzare facilmente lo scambio di regali tra amici, colleghi o familiari usando Telegram e una comoda Dashboard Web.
 
-## Cosa fa
-- Crea e gestisce gruppi con admin e membri
-- Salva i dati dei partecipanti e le loro wishlist in file JSON
-- Gestisce esclusioni tra coppie (chi non deve regalare a chi)
-- Esegue lo shuffle rispettando le esclusioni
-- Invia messaggi e risultati del sorteggio ai partecipanti via Telegram
-- Offre una dashboard Streamlit per amministrare il gioco
+## 🚀 Funzionalità Principali
 
-## Requisiti
-- Python 3.10+
-- Pacchetti: `python-telegram-bot`, `streamlit`
+### 🤖 Bot Telegram
+- **Creazione Gruppi**: Crea gruppi pubblici o privati.
+- **Gestione Partecipanti**: Unisciti ai gruppi e vedi chi partecipa.
+- **Wishlist**: Inserisci i tuoi desideri direttamente dal bot.
+- **Mini App**: Un'interfaccia grafica festiva integrata (anteprima locale).
+- **Notifiche**: Ricevi il nome del tuo "Secret Santa" direttamente in chat.
 
-Installa i pacchetti necessari:
+### 📊 Dashboard Web (Streamlit)
+- **Gestione Completa**: L'admin può vedere tutti i gruppi e i partecipanti.
+- **Esclusioni**: Imposta regole (es. "Marco non può regalare a Giulia").
+- **Shuffle**: Esegui il sorteggio automatico delle coppie.
+- **Invio Risultati**: Invia i messaggi a tutti con un click.
 
+## 🛠️ Installazione e Avvio
+
+### Prerequisiti
+- Python 3.8+
+- Un token bot Telegram (da `@BotFather`)
+
+### Avvio Rapido
+Per lanciare sia il Bot che la Dashboard contemporaneamente:
+
+```bash
+python run_all.py
 ```
-pip install python-telegram-bot streamlit
-```
 
-## Configurazione
-- Recupera il tuo token del bot da BotFather su Telegram
-- Imposta il token nel codice:
-  - `bot.py`: sostituisci il token nel builder `Application.builder().token("...")`
-  - `dashboard.py`: aggiorna `BOT_TOKEN = "..."`
+- **Dashboard**: http://localhost:8501
+- **Mini App (Anteprima)**: http://localhost:8000
 
-Facoltativo: puoi organizzare i dati dei gruppi nella cartella `data/` (creata automaticamente). I metadati dei gruppi sono in `groups/groups.json`.
+## 📂 Struttura del Progetto
 
-## Come usarlo
+- `src/`: Contiene tutto il codice sorgente (Bot, Dashboard, Logica).
+- `webapp/`: Frontend della Mini App (HTML/CSS/JS).
+- `data/`: Cartella dove vengono salvati i dati dei gruppi (JSON).
+- `run_all.py`: Script per avviare tutto.
 
-### Avviare il bot Telegram
-1. Avvia il bot:
-   ```
-   python bot.py
-   ```
-2. Comandi disponibili sul bot:
-   - `/start` benvenuto
-   - `/creategroup` crea un nuovo gruppo e imposta l’admin
-   - `/joingroup <ID_GRUPPO>` entra in un gruppo esistente
-   - `/participants` mostra i partecipanti del gruppo attivo
-   - `/back` torna al menu gruppi
+## 📝 Note
+- Il bot supporta gruppi **Pubblici** (accesso libero) e **Privati** (approvazione admin).
+- La Mini App richiede HTTPS per funzionare su Telegram, ma può essere testata in locale.
 
-### Usare la dashboard
-1. Avvia la dashboard Streamlit:
-   ```
-   streamlit run dashboard.py
-   ```
-2. Dalla sidebar puoi:
-   - Attivare/disattivare il bot (toggle)
-   - Selezionare un gruppo esistente o crearne uno nuovo
-3. Dalle tab puoi:
-   - Gestire partecipanti (aggiungere/rimuovere, promuovere admin)
-   - Modificare wishlist
-   - Gestire esclusioni
-   - Eseguire il sorteggio (shuffle) e inviare i risultati su Telegram
-   - Inviare messaggi al gruppo corrente o broadcast a tutti i gruppi
-
-### Struttura dati
-- `groups/groups.json`: elenco gruppi, admin e membri
-- `data/<group_id>/participants.json`: mappa `Nome -> ChatID`
-- `data/<group_id>/exclusions.json`: esclusioni per utente
-- `data/<group_id>/wishlist.json`: desideri per utente
-- `data/<group_id>/shuffle.json`: risultati del sorteggio
-
-### Script di utilità
-- `shuffle.py`: esempio di sorteggio standalone su una cartella di gruppo
-- `send_results.py`: invio dei risultati del sorteggio su Telegram per un gruppo
-
-## Note
-- Assicurati che ogni partecipante abbia un `ChatID` valido in `participants.json` prima di inviare i risultati
-- Le cartelle e i file JSON sono generati automaticamente quando crei o modifichi gruppi dalla dashboard o dal bot
+Buon divertimento e Buon Natale! 🎄

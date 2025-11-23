@@ -9,9 +9,10 @@ from send_results import send_results_to_group
 from group_management import create_group
 
 # Configurazione
-GROUPS_FILE = "groups/groups.json"
-DATA_DIR = "data"
-SETTINGS_FILE = "settings.json"
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+GROUPS_FILE = os.path.join(BASE_DIR, "groups", "groups.json")
+DATA_DIR = os.path.join(BASE_DIR, "data")
+SETTINGS_FILE = os.path.join(BASE_DIR, "settings.json")
 BOT_TOKEN = "7548642306:AAFIFgN95ntOFGdcI2-sHS7T3y3zCCut4R8" # Idealmente da .env
 
 st.set_page_config(page_title="Secret Santa Dashboard", page_icon="🎅", layout="wide")
@@ -85,14 +86,24 @@ st.sidebar.divider()
 # 3. Create New Group
 with st.sidebar.expander("➕ Crea Nuovo Gruppo"):
     new_group_name = st.text_input("Nome Admin del Gruppo")
+    new_group_title = st.text_input("Nome del Gruppo")
+    visibility = st.radio("Visibilità", ["public", "private"], format_func=lambda x: "Pubblico 🔓" if x == "public" else "Privato 🔒")
+    
+    access_code = None
+    if visibility == "private":
+        access_code = st.text_input("Codice di Accesso", type="password")
+    
     if st.button("Crea Gruppo"):
-        if new_group_name:
-            new_id, msg = create_group(new_group_name, group_name=new_group_name)
-            if new_id:
-                st.success(f"Gruppo creato! ID: {new_id}")
+        if new_group_name and new_group_title:
+            if visibility == "private" and not access_code:
+                st.error("Inserisci un codice di accesso per il gruppo privato.")
             else:
-                st.error(msg)
-            st.rerun()
+                new_id, msg = create_group(new_group_name, new_group_title, visibility=visibility, access_code=access_code)
+                if new_id:
+                    st.success(f"Gruppo creato! ID: {new_id}")
+                    st.rerun()
+                else:
+                    st.error(msg)
         else:
             st.error("Inserisci un nome.")
 

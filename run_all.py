@@ -6,11 +6,11 @@ def run_all():
     print("🚀 Avvio Secret Santa Bot e Dashboard...")
 
     # Avvia il bot Telegram
-    bot_process = subprocess.Popen([sys.executable, "bot.py"])
+    bot_process = subprocess.Popen([sys.executable, "src/bot.py"])
     print(f"🤖 Bot avviato (PID: {bot_process.pid})")
 
     # Avvia la dashboard Streamlit
-    dashboard_process = subprocess.Popen(["streamlit", "run", "dashboard.py"])
+    dashboard_process = subprocess.Popen(["streamlit", "run", "src/dashboard.py"])
     print(f"📊 Dashboard avviata (PID: {dashboard_process.pid})")
 
     try:

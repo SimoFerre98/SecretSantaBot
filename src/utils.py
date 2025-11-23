@@ -2,16 +2,31 @@ import json
 import os
 import uuid
 
+# Ottieni la directory base del progetto (una cartella sopra 'src')
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 def load_data(filename):
+    # Se il filename non è assoluto, lo rendiamo relativo a BASE_DIR
+    if not os.path.isabs(filename):
+        filepath = os.path.join(BASE_DIR, filename)
+    else:
+        filepath = filename
+        
     try:
-        with open(filename, "r") as file:
+        with open(filepath, "r") as file:
             return json.load(file)
     except FileNotFoundError:
         return {}
 
 def save_data(filename, data):
-    os.makedirs(os.path.dirname(filename), exist_ok=True)
-    with open(filename, "w") as file:
+    # Se il filename non è assoluto, lo rendiamo relativo a BASE_DIR
+    if not os.path.isabs(filename):
+        filepath = os.path.join(BASE_DIR, filename)
+    else:
+        filepath = filename
+
+    os.makedirs(os.path.dirname(filepath), exist_ok=True)
+    with open(filepath, "w") as file:
         json.dump(data, file, indent=4)
 
 def generate_unique_id():
