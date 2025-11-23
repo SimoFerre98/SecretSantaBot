@@ -1,4 +1,49 @@
 import os
+import json
+from utils import load_data, save_data, generate_unique_id
+
+GROUPS_FILE = "groups/groups.json"
+GROUPS_DIR = "data"
+
+def create_group(user_name, group_name, chat_id=None, visibility="public", access_code=None):
+    """Crea un nuovo gruppo e restituisce il suo ID e un messaggio."""
+    if not group_name:
+        return None, "Il nome del gruppo non può essere vuoto."
+    
+    if visibility == "private" and not access_code:
+         return None, "I gruppi privati richiedono un codice di accesso."
+
+    groups = load_data(GROUPS_FILE)
+    
+    # Check se il nome esiste già
+    for g in groups.values():
+        if g.get("name") == group_name:
+            return None, f"Esiste già un gruppo chiamato '{group_name}'. Scegline un altro."
+
+    group_id = generate_unique_id()
+    
+    groups[group_id] = {
+        "name": group_name, 
+        "admin": user_name, 
+        "members": [user_name],
+        "visibility": visibility, # public o private
+        "access_code": access_code, # Solo per gruppi privati
+        "pending_requests": [] 
+    }
+    save_data(GROUPS_FILE, groups)
+    
+    # Crea la cartella per i dati del gruppo
+    group_path = os.path.join(GROUPS_DIR, group_id)
+    os.makedirs(group_path, exist_ok=True)
+    
+    # Crea i file JSON del gruppo
+    participants_data = {user_name: chat_id if chat_id else "DASHBOARD_ADMIN"}
+    save_data(os.path.join(group_path, "participants.json"), participants_data)
+    save_data(os.path.join(group_path, "exclusions.json"), {})
+    save_data(os.path.join(group_path, "wishlist.json"), {})
+    save_data(os.path.join(group_path, "shuffle.json"), {})
+    
+    return group_id, f"Gruppo '{group_name}' ({visibility}) creato con successo!"
 
 def get_all_groups():
     """Restituisce una lista di tutti i nomi dei gruppi con visibilità."""
